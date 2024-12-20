@@ -3,7 +3,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/a
 import {getFirestore , query, collection} from "firebase/firestore"
 import {useAuthState} from "react-firebase-hooks/auth"
 import { useCollection } from "react-firebase-hooks/firestore";
-import image from "./assets/purna.jpeg"
 
 
 const firebaseConfig = {
@@ -29,7 +28,7 @@ function App() {
     <div className="max-w-6xl mx-auto">
         <header className="border-b p-2 flex justify-between">
             <h2 className="text-2xl font-bold text-black">
-                HARİKA PORNA İNDİR DEHŞET MUKEMEL PURNA İNDİR
+                WhatTheFuckApp
             </h2>
             {user && <SignOut/>}
         </header>
@@ -62,7 +61,7 @@ function SignOut(){
     return (
         <button
             onClick={()=> signOut(auth)}
-            className="w-28 h-12 bg-red-400 text-white font-bold rounded-[50px]">
+            className="w-28 h-12 bg-red-600 text-white font-bold rounded-[50px]">
             Cikis Yap!
         </button>
     )
@@ -74,12 +73,7 @@ function MessageList() {
 
     if (loading) return <p>Mesajlar yükleniyor...</p>;
     if (error) return <p>Hata: {error.message}</p>;
-    if (!messagesSnapshot?.docs.length) return (
-        <div className=" w-[800px] h-[790px] mx-auto mt-9 pl-20 justify-center items-center">
-            <img src={image} width="592" height="800" />
-        </div>
-
-    )
+    if (!messagesSnapshot?.docs.length) return (<p> Burada hic mesaj yok! </p>)
 
 
     return (
@@ -92,5 +86,6 @@ function MessageList() {
         </div>
     );
 }
+
 
 export default App
