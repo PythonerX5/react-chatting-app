@@ -3,6 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/a
 import {getFirestore , query, collection} from "firebase/firestore"
 import {useAuthState} from "react-firebase-hooks/auth"
 import { useCollection } from "react-firebase-hooks/firestore";
+import {Suspense} from "react";
 
 
 const firebaseConfig = {
@@ -32,7 +33,16 @@ function App() {
             </h2>
             {user && <SignOut/>}
         </header>
-        {user ? <MessageList /> : <SignIn />}
+        {user ? (
+            <>
+                <MessageList />
+                <MessageBar />
+            </>
+        ) : (
+            <SignIn />
+        )}
+
+
     </div>
   )
 }
@@ -69,9 +79,9 @@ function SignOut(){
 
 function MessageList() {
     const messagesRef = collection(db, "messages");
-    const [messagesSnapshot, loading, error] = useCollection(query(messagesRef));
+    const [messagesSnapshot, error] = useCollection(query(messagesRef));
 
-    if (loading) return <p>Mesajlar yükleniyor...</p>;
+
     if (error) return <p>Hata: {error.message}</p>;
     if (!messagesSnapshot?.docs.length) return (<p> Burada hic mesaj yok! </p>)
 
@@ -85,6 +95,20 @@ function MessageList() {
             ))}
         </div>
     );
+}
+
+function MessageBar(){
+    return(
+        <div className="flex ">
+            <form>
+                <input type="text"
+                    className="border-gray-500 border rounded-lg p-2"/>
+                <button type="submit" className="w-32 h-12 mx-12 bg-blue-400 text-white font-bold rounded-[50px]">
+                    Gonder
+                </button>
+            </form>
+        </div>
+    )
 }
 
 
