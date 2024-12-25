@@ -1,9 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
-import {getFirestore , query, collection} from "firebase/firestore"
+import {getFirestore , collection} from "firebase/firestore"
 import {useAuthState} from "react-firebase-hooks/auth"
 import { useCollection } from "react-firebase-hooks/firestore";
-import {Suspense} from "react";
+import { useState, useEffect } from "react";
+//import {Suspense} from "react";
 
 
 const firebaseConfig = {
@@ -29,7 +30,7 @@ function App() {
     <div className="max-w-6xl mx-auto">
         <header className="border-b p-2 flex justify-between">
             <h2 className="text-2xl font-bold text-black">
-                WhatTheFuckApp
+                ShutTheFuckApp
             </h2>
             {user && <SignOut/>}
         </header>
@@ -78,18 +79,27 @@ function SignOut(){
 }
 
 function MessageList() {
+    const [isLoading, setIsLoading] = useState(true);
     const messagesRef = collection(db, "messages");
-    const [messagesSnapshot, error] = useCollection(query(messagesRef));
+    const [messagesSnapshot, loading, error] = useCollection(messagesRef);
 
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading || loading) return <p>Yükleniyor...</p>;
     if (error) return <p>Hata: {error.message}</p>;
     if (!messagesSnapshot?.docs.length) return (<p> Burada hic mesaj yok! </p>)
 
 
     return (
-        <div>
+        <div className="top-0 pl-4">
         {messagesSnapshot?.docs.map((doc) => (
-                <div key={doc.id}>
+                <div key={doc.id} className="border  my-4">
                     {doc.data().text}
                 </div>
             ))}
@@ -98,15 +108,24 @@ function MessageList() {
 }
 
 function MessageBar(){
-    return(
-        <div className="flex ">
-            <form>
-                <input type="text"
-                    className="border-gray-500 border rounded-lg p-2"/>
-                <button type="submit" className="w-32 h-12 mx-12 bg-blue-400 text-white font-bold rounded-[50px]">
-                    Gonder
-                </button>
-            </form>
+
+    return (
+        <div className="fixed bottom-0 left-0 w-full bg-white border-t">
+            <div className="max-w-6xl mx-auto p-4">
+                <form className="flex w-full">
+                    <input
+                        type="text"
+                        placeholder="Bir mesaj yazın..."
+                        className="flex-grow border-gray-500 border rounded-lg p-2"
+                    />
+                    <button
+                        type="submit"
+                        className="w-32 h-12 mx-4 bg-blue-400 text-white font-bold rounded-[50px]"
+                    >
+                        Gönder
+                    </button>
+                </form>
+            </div>
         </div>
     )
 }
