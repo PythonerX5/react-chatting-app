@@ -93,12 +93,18 @@ function MessageList() {
 
     if (isLoading || loading) return <p>Yükleniyor...</p>;
     if (error) return <p>Hata: {error.message}</p>;
-    if (!messagesSnapshot?.docs.length) return (<p> Burada hic mesaj yok! </p>)
+    if (!messagesSnapshot?.docs.length) return (
+        <div className="flex items-center justify-center my-12 ">
+            <p className="flex items-center justify-center my-12 bg-gray-300 h-12 rounded-[15px] text-xl max-w-6xl px-12"> Yeni Bir Mesaj
+                Gondermeyi Dene!</p>
+        </div>
+
+    )
 
 
     return (
         <div className="top-0 pl-4">
-        {messagesSnapshot?.docs.map((doc) => (
+            {messagesSnapshot?.docs.map((doc) => (
                 <div key={doc.id} className="border  my-4">
                     {doc.data().text}
                 </div>
